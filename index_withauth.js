@@ -10,7 +10,7 @@ const PORT = 5000;
 app.use(session({ secret: "fingerpint", resave: true, saveUninitialized: true }));
 
 // Middleware for user authentication
-app.use("/user", (req, res, next) => {
+app.use("/users", (req, res, next) => {
     // Check if user is authenticated
     if (req.session.authorization) {
         let token = req.session.authorization['accessToken']; // Access Token
@@ -35,7 +35,7 @@ app.use("/user", (req, res, next) => {
 app.use(express.json());
 
 // User routes
-app.use("/user", routes);
+app.use("/users", routes);
 
 // Login endpoint
 app.post("/login", (req, res) => {

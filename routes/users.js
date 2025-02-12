@@ -1,31 +1,50 @@
 const express = require('express');
 const router = express.Router();
 
-
 let users = [
     {
         firstName: "John",
-        lastName: "wick",
+        lastName: "Wick",
         email: "johnwick@gamil.com",
         DOB: "22-01-1990",
     },
     {
         firstName: "John",
-        lastName: "smith",
+        lastName: "Smith",
         email: "johnsmith@gamil.com",
         DOB: "21-07-1983",
     },
     {
         firstName: "Joyal",
-        lastName: "white",
+        lastName: "White",
         email: "joyalwhite@gamil.com",
         DOB: "21-03-1989",
     },
 ];
 
-// GET request: Retrieve all users
-router.get("/", (req, res) => {
-    res.send(JSON.stringify({users}, null, 4));
+// Additional tasks
+
+// GET users having particular Last Name
+router.get("/last-name/:lastName", (req, res) => {
+    const lastName = req.params.lastName;
+    let filtered_lastname = users.filter((user) => user.lastName === lastName);
+    res.send(filtered_lastname);
+});
+
+function getDateFromString(strDate) {
+    let [dd, mm, yyyy] = strDate.split('-');
+    return new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
+}
+
+// GET users sorted by date of birth
+router.get("/sort", (req, res) => {
+    let sorted_users = [...users].sort((a, b) => {
+        let d1 = getDateFromString(a.DOB);
+        let d2 = getDateFromString(b.DOB);
+        return d1 - d2;
+    });
+
+    res.send(sorted_users); // Use res.json to ensure proper response formatting
 });
 
 // GET by specific ID request: Retrieve a single user with email ID
@@ -33,6 +52,10 @@ router.get("/:email", (req, res) => {
     res.send(users.filter((user) => user.email === req.params.email));
 });
 
+// GET request: Retrieve all users
+router.get("/", (req, res) => {
+    res.send(JSON.stringify({ users }, null, 4));
+});
 
 // POST request: Create a new user
 router.post("/", (req, res) => {
